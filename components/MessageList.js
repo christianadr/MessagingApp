@@ -9,7 +9,7 @@ import {
     View,
 } from "react-native";
 import { MessageShape } from "../utils/MessageUtils";
-import { MapView } from "expo";
+import MapView, { Marker } from "react-native-maps";
 
 const keyExtractor = (item) => item.id.toString();
 
@@ -22,8 +22,6 @@ export default class MessageList extends React.Component {
     static defaultProps = {
         onPressMessage: () => {},
     };
-
-    //...
 
     renderMessageItem = ({ item }) => {
         const { onPressMessage } = this.props;
@@ -49,16 +47,20 @@ export default class MessageList extends React.Component {
                 return <Image style={styles.image} source={{ uri }} />;
             case "location":
                 return (
-                    <MapView
-                        style={styles.map}
-                        initialRegion={{
-                            ...coordinate,
-                            latitudeDelta: 0.08,
-                            longitudeDelta: 0.04,
-                        }}
-                    >
-                        <MapView.Marker coordinate={coordinate} />
-                    </MapView>
+                    <View style={styles.messageRow}>
+                        <View style={styles.mapContainer}>
+                            <MapView
+                                style={styles.map}
+                                initialRegion={{
+                                    ...coordinate,
+                                    latitudeDelta: 0.08,
+                                    longitudeDelta: 0.04,
+                                }}
+                            >
+                                <Marker coordinate={coordinate} />
+                            </MapView>
+                        </View>
+                    </View>
                 );
             default:
                 return null;
@@ -84,5 +86,36 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         overflow: "visible", // prevents clipping on resize!
+    },
+    text: {
+        color: "white",
+        fontSize: 16,
+    },
+    image: {
+        height: 200,
+        width: 200,
+        borderRadius: 8,
+    },
+    mapContainer: {
+        height: 200,
+        width: 200,
+        borderRadius: 8,
+        overflow: "hidden",
+    },
+    map: {
+        flex: 1,
+        borderRadius: 8,
+    },
+    messageRow: {
+        flexDirection: "row",
+        justifyContent: "flex-end",
+        marginLeft: 60,
+        marginBottom: 8,
+    },
+    messageBubble: {
+        backgroundColor: "blue",
+        borderRadius: 99999,
+        paddingHorizontal: 16,
+        paddingVertical: 8,
     },
 });
